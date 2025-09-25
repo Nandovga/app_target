@@ -1,5 +1,5 @@
+import { colors } from "@/theme";
 import { styles } from "./styles";
-import { colors } from "@/theme/colors";
 import { ActivityIndicator } from "react-native";
 
 export function Loading() {
