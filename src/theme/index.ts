@@ -1,4 +1,4 @@
-import {colors} from "@/theme/colors";
-import {fontFamily} from "@/theme/fontFamily";
+import { colors } from "@/theme/colors";
+import { fontFamily } from "@/theme/fontFamily";
 
-export { colors, fontFamily }
+export { colors, fontFamily };

@@ -24,4 +24,4 @@ export const styles = StyleSheet.create({
         fontFamily: fontFamily.regular,
         color: colors.gray[600]
     }
-})
+});

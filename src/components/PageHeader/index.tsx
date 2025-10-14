@@ -11,19 +11,25 @@ type Props = {
         onPress: () => void;
         icon: keyof typeof MaterialIcons.glyphMap;
     }
-}
+};
 
 export function PageHeader({ title, subtitle, rightButton }: Props) {
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <TouchableOpacity activeOpacity={0.8} onPress={() => router.back()}>
-                    <MaterialIcons name="arrow-back" size={32} color={colors.black}/>
+                <TouchableOpacity activeOpacity={0.8}
+                    onPress={() => router.back()}>
+                    <MaterialIcons color={colors.black}
+                        name="arrow-back"
+                        size={32}/>
                 </TouchableOpacity>
 
                 {rightButton && (
-                    <TouchableOpacity activeOpacity={0.8} onPress={() => rightButton.onPress()}>
-                        <MaterialIcons name={rightButton.icon} size={24} color={colors.gray[500]}/>
+                    <TouchableOpacity activeOpacity={0.8}
+                        onPress={() => rightButton.onPress()}>
+                        <MaterialIcons color={colors.gray[500]}
+                            name={rightButton.icon}
+                            size={24}/>
                     </TouchableOpacity>
                 )}
             </View>
@@ -31,5 +37,5 @@ export function PageHeader({ title, subtitle, rightButton }: Props) {
             <Text style={styles.title}>{title}</Text>
             {subtitle && <Text style={styles.subtitle}>{subtitle}</Text>}
         </View>
-    )
+    );
 }

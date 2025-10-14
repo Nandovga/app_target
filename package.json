@@ -2,11 +2,14 @@
   "name": "target",
   "version": "1.0.0",
   "main": "expo-router/entry",
+  "type": "module",
   "scripts": {
     "start": "expo start --dev-client",
     "android": "expo run:android",
     "ios": "expo run:ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "lint": "eslint",
+    "lint:fix": "eslint --fix"
   },
   "dependencies": {
     "@expo-google-fonts/inter": "^0.4.1",
@@ -23,8 +26,12 @@
     "expo-linear-gradient": "~14.1.5"
   },
   "devDependencies": {
+    "@stylistic/eslint-plugin": "^5.4.0",
+    "@typescript-eslint/eslint-plugin": "^8.46.1",
+    "@typescript-eslint/parser": "^8.46.1",
     "@babel/core": "^7.20.0",
     "@types/react": "~19.0.10",
+    "eslint": "^9.37.0",
     "typescript": "~5.8.3"
   },
   "private": true

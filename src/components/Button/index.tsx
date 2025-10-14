@@ -7,15 +7,16 @@ type Props = TouchableOpacityProps & {
     isProcessing?: boolean;
 };
 
-export function Button({title, isProcessing = false, ...rest}: Props) {
+export function Button({ title, isProcessing = false, ...rest }: Props) {
     return (
-        <TouchableOpacity style={styles.container}
-                          activeOpacity={0.8}
-                          disabled={isProcessing}
-                          {...rest}>
+        <TouchableOpacity activeOpacity={0.8}
+            disabled={isProcessing}
+            style={styles.container}
+            {...rest}>
             {isProcessing
-                ? <ActivityIndicator size="small" color={colors.white}/>
+                ? <ActivityIndicator color={colors.white}
+                    size="small"/>
                 : <Text style={styles.title}>{title}</Text>}
         </TouchableOpacity>
-    )
+    );
 }
