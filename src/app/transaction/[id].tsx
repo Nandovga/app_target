@@ -1,14 +1,34 @@
-import { Button, Text, View } from "react-native";
-import { router, useLocalSearchParams } from "expo-router";
+import { View } from "react-native";
+import { Input } from "@/components/Input";
+import { Button } from "@/components/Button";
+import { useLocalSearchParams } from "expo-router";
+import { PageHeader } from "@/components/PageHeader";
+import { CurrencyInput } from "@/components/CurrencyInput";
+import { TransactionType } from "@/components/TransactionType";
+import { useState } from "react";
+import { TransactionTypes } from "@/utils/TransactionTypes";
 
 export default function () {
+    const [type, setType] = useState(TransactionTypes.Input);
     const params = useLocalSearchParams<{ id: string }>();
 
     return (
-        <View style={{ justifyContent: "center", alignItems: "center", flex: 1 }}>
-            <Text>Transaction {params.id}</Text>
-            <Button title="Voltar"
-                onPress={() => router.back()}/>
+        <View style={{ flex: 1, padding: 24 }}>
+            <PageHeader
+                subtitle="A cada valor guardado você fica mais próximo da sua meta. Se esforce para guardar e evitar retirar."
+                title="Nova transação"/>
+            <View style={{ marginTop: 32, gap: 24 }}>
+                <TransactionType
+                    selected={type}
+                    onChange={setType}/>
+                <CurrencyInput
+                    label="Valor (R$)"
+                    value={0}/>
+                <Input
+                    label="Motivo (opcional)"
+                    placeholder="Ex: Investir em CDB de 110% no banco XPTO"/>
+                <Button title="Salvar"/>
+            </View>
         </View>
     );
 }
