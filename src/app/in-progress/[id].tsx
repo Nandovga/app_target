@@ -48,7 +48,7 @@ export default function () {
                         data={item}
                         onRemove={console.log}/>
                 )}
-                data={[]}
+                data={transaction}
                 emptyMessage="Nenhuma transação. Toque em nova transação para guardar seu primeiro valor."
                 title="Transações"/>
             <View style={{ paddingBottom: 15 }}>
