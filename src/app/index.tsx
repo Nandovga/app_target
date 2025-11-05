@@ -1,9 +1,13 @@
-import { router } from "expo-router";
 import { List } from "@/components/List";
 import { Button } from "@/components/Button";
-import { Target } from "@/components/Target";
-import { View, StatusBar } from "react-native";
+import { useCallback, useState } from "react";
+import { Loading } from "@/components/Loading";
 import { HomeHeader } from "@/components/HomeHeader";
+import { router, useFocusEffect } from "expo-router";
+import { View, StatusBar, Alert } from "react-native";
+import { Target, TargetProps } from "@/components/Target";
+import { numberToCurrency } from "@/utils/numberToCurrency";
+import { useTargetDatabase } from "@/database/useTargetDatabase";
 
 const summary = {
     total: "R$ 2.680,00",
@@ -11,44 +15,58 @@ const summary = {
     output: { label: "Saidas", value: "-R$ 883.65" }
 };
 
-const targets = [
-    {
-        id: "1",
-        name: "Estudar React Native",
-        percent: "100%",
-        current: "R$ 1.000,00",
-        target: "R$ 1.000,00"
-    },
-    {
-        id: "2",
-        name: "Estudar React Native",
-        percent: "100%",
-        current: "R$ 1.000,00",
-        target: "R$ 1.000,00"
-    },
-    {
-        id: "3",
-        name: "Estudar React Native",
-        percent: "100%",
-        current: "R$ 1.000,00",
-        target: "R$ 1.000,00"
-    }
-];
-
 export default function Index() {
+    const [isFetching, setIsFetching] = useState(true);
+    const [targets, setTargets] = useState<TargetProps[]>([]);
+    const targetDataBase = useTargetDatabase();
+
+    async function fetchTargets(): Promise<TargetProps[]> {
+        try {
+            const response = await targetDataBase.listBySavedValue();
+            return response.map(item => ({
+                id: String(item.id),
+                name: String(item.name),
+                current: numberToCurrency(item.current),
+                percent: item.percentage.toFixed(0) + "%",
+                target: numberToCurrency(item.amount)
+            }));
+        } catch (error) {
+            Alert.alert("Erro", "Não foi possível carregar as metas.");
+        }
+    }
+
+    async function fetchData() {
+        const targetDataPromise = fetchTargets();
+        const [targetData] = await Promise.all([targetDataPromise]);
+
+        setTargets(targetData);
+        setIsFetching(false);
+    }
+
+    useFocusEffect(
+        useCallback(() => {
+            fetchData();
+        }, [])
+    );
+
+    if (isFetching) {
+        return <Loading/>;
+    }
+
     return (
         <View style={{ flex: 1 }}>
             <StatusBar barStyle="light-content"/>
             <HomeHeader data={summary}/>
-            <List renderItem={({ item }) => (
-                <Target data={item}
-                    onPress={() => router.navigate(`/in-progress/${item.id}`)}/>
-            )}
-            containerStyle={{ paddingHorizontal: 24 }}
-            data={targets}
-            emptyMessage="Nenhum meta. Clique em nova meta para adicionar."
-            keyExtractor={(item) => item.id}
-            title="Metas"/>
+            <List
+                renderItem={({ item }) => (
+                    <Target data={item}
+                        onPress={() => router.navigate(`/in-progress/${item.id}`)}/>
+                )}
+                containerStyle={{ paddingHorizontal: 24 }}
+                data={targets}
+                emptyMessage="Nenhum meta. Clique em nova meta para adicionar."
+                keyExtractor={(item) => item.id}
+                title="Metas"/>
             <View style={{ padding: 24, paddingBottom: 32 }}>
                 <Button title="Nova Meta"
                     onPress={() => router.navigate("target")}/>
