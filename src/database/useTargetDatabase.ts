@@ -1,4 +1,5 @@
 import { useSQLiteContext } from "expo-sqlite";
+import id from "@/app/in-progress/[id]";
 
 export type TargetCreate = {
     name: string
@@ -15,6 +16,10 @@ export type TargetResponse = {
     updated_at: Date
 };
 
+export type TargetUpdate = TargetCreate & {
+    id: number
+};
+
 export function useTargetDatabase() {
     const database = useSQLiteContext();
 
@@ -28,7 +33,7 @@ export function useTargetDatabase() {
         });
     }
 
-    function listBySavedValue() {
+    async function list() {
         return database.getAllAsync<TargetResponse>(`
             SELECT targets.id,
                    targets.name,
@@ -40,11 +45,11 @@ export function useTargetDatabase() {
             FROM targets
                      LEFT JOIN transactions ON targets.id = transactions.target_id
             GROUP BY targets.id, targets.name, targets.amount
-            ORDER BY current DESC
+            ORDER BY percentage DESC
         `);
     }
 
-    function show(id: number) {
+    async function show(id: number) {
         return database.getFirstAsync<TargetResponse>(`
             SELECT targets.id,
                    targets.name,
@@ -59,5 +64,30 @@ export function useTargetDatabase() {
         `);
     }
 
-    return { create, listBySavedValue, show };
+    async function update(data: TargetUpdate) {
+        const statement = await database.prepareAsync(`
+            UPDATE targets
+            SET name       = $name,
+                amount     = $amount,
+                updated_at = CURRENT_TIMESTAMP
+            WHERE id = $id
+        `);
+        statement.executeAsync({
+            $id: data.id,
+            $name: data.name,
+            $amount: data.amount,
+        });
+    }
+
+    async function remove(id: number) {
+        await database.runAsync("DELETE FROM targets WHERE id = ?", id);
+    }
+
+    return {
+        show,
+        update,
+        create,
+        remove,
+        list
+    };
 }
